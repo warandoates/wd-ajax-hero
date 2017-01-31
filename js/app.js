@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 (function() {
   'use strict';
 
@@ -57,4 +58,29 @@
   };
 
   // ADD YOUR CODE HERE
+  let search = document.getElementById("search");
+  let searchBtn = document.getElementById("form");
+  searchBtn.addEventListener("submit",(evt) => {
+    evt.preventDefault();
+    let searchVal = search.value;
+    fetching(searchVal);
+  });
+
+  function fetching(searchVal) {
+    console.log(searchVal);
+
+    return fetch(`http://www.omdbapi.com/?t=${searchVal}&y=&plot=short&r=json`)
+    .then((responseObj) => {
+      return responseObj.json();
+    })
+    .then((jsonObj) => {
+      const movieSel = jsonObj;
+
+        movies.push(movieSel);
+
+      console.log(movies);
+      renderMovies();
+      return jsonObj;
+    })
+  }
 })();
