@@ -21,10 +21,9 @@
       $title.tooltip({ delay: 50 }).text(movie.title);
 
       const $poster = $('<img>').addClass('poster');
-
       $poster.attr({
         src: movie.poster,
-        alt: `${movie.poster} Poster`
+        alt: `${movie.Poster} Poster`
       });
 
       $content.append($title, $poster);
@@ -59,7 +58,9 @@
 
   // ADD YOUR CODE HERE
   let search = document.getElementById("search");
-  let searchBtn = document.getElementById("form");
+  let searchBtn = document.getElementsByTagName("form")[0];
+  let input = document.getElementsByTagName('input')[0];
+  input.required = true;
   searchBtn.addEventListener("submit",(evt) => {
     evt.preventDefault();
     let searchVal = search.value;
@@ -67,20 +68,19 @@
   });
 
   function fetching(searchVal) {
-    console.log(searchVal);
-
-    return fetch(`http://www.omdbapi.com/?t=${searchVal}&y=&plot=short&r=json`)
-    .then((responseObj) => {
-      return responseObj.json();
-    })
+    return fetch(`http://www.omdbapi.com/?s=${searchVal}`)
+    .then((responseObj) => responseObj.json()
+    )
     .then((jsonObj) => {
-      const movieSel = jsonObj;
-
-        movies.push(movieSel);
-
-      console.log(movies);
+      if(movies.length > 0) {
+        movies.splice(0, movies.length);
+      }
+      const movieSel = jsonObj.Search;
+        for (let selection of movieSel) {
+          movies.push({id: selection.imdbID, poster: selection.Poster, title: selection.Title, year: selection.Year});
+        }
+        search.value = '';
       renderMovies();
-      return jsonObj;
-    })
+    });
   }
 })();
